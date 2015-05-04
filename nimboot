@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+echo nimboot
+echo
+echo -n "What folder would you like Nim to be checked out into? (default: ./Nim) "
+read $dir
+[ -z "$dir" ] && dir="./Nim"
+echo
+
+branch=""
+while [ "$branch" != "master" ] && [ "$branch" != "devel" ]; do
+    echo -n "Which branch do you want? (master or devel) (default: devel) "
+    read $branch
+    [ -z "$branch" ] && export branch=devel
+done
+echo
+
+echo "Your selected config:"
+echo "directory: $dir"
+echo "branch: $branch"
+echo -n "Press Enter to continue "
+read
+echo
+
+echo "Creating directories..."
+mkdir -p $dir
+
+echo "Cloning Nim..."
+git clone --depth=10 -b $branch https://github.com/Araq/Nim.git $dir
+
+echo "Cloning csources..."
+cd $dir
+git clone --depth=10 -b $branch https://github.com/nim-lang/csources.git csources
+
+echo "Building csources..."
+cd csources
+if which make; then
+    make -j
+else
+    chmod +x build.sh
+    ./build.sh
+fi
+cd ..
+
+echo "Building Koch..."
+bin/nim c koch
+
+echo "Building Nim..."
+./koch boot
+
+echo "Removing csources..."
+rm -rf csources
