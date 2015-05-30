@@ -28,11 +28,11 @@ echo "Creating directories..."
 mkdir -p $dir
 
 echo "Cloning Nim..."
-git clone --depth=10 -b $branch https://github.com/Araq/Nim.git $dir
+git clone --depth=1 -b $branch https://github.com/Araq/Nim.git $dir
 
 echo "Cloning csources..."
 cd $dir
-git clone --depth=10 -b $branch https://github.com/nim-lang/csources.git csources
+git clone --depth=1 -b $branch https://github.com/nim-lang/csources.git csources
 
 echo "Building csources..."
 cd csources
